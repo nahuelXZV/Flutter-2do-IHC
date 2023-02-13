@@ -1,12 +1,6 @@
 import 'package:flutter/material.dart';
-// import 'package:flutter/services.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sensors_plus/sensors_plus.dart';
-
-import 'dart:math';
-import 'package:flutter/material.dart';
-import 'package:sensors_plus/sensors_plus.dart';
-// import 'speech.dart';
 import 'principal.dart';
 
 void main() {
@@ -18,20 +12,13 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Ayudame',
-      //  sacar el banner de debug
-      debugShowCheckedModeBanner: false,
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
-      home: Scaffold(
-          appBar: AppBar(
-            title: const Text('Ayudame'),
-          ),
-          body: Center(
-            child: MyHomePage(),
-          )),
-    );
+        title: 'Ayudame',
+        //  sacar el banner de debug
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+        ),
+        home: const Principal());
   }
 }
 

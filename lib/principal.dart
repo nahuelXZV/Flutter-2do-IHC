@@ -8,6 +8,8 @@ import 'libs/speak.dart';
 import 'libs/microphono.dart';
 
 class Principal extends StatefulWidget {
+  const Principal({super.key});
+
   @override
   _SpeechToTextDemoState createState() => _SpeechToTextDemoState();
 }
@@ -31,7 +33,7 @@ class _SpeechToTextDemoState extends State<Principal>
     WidgetsBinding.instance.addObserver(this);
     super.initState();
     _activateSpeechRecognizer(); // activar el micrófono
-    Future.delayed(const Duration(seconds: 14), () {
+    Future.delayed(const Duration(seconds: 11), () {
       // esperar 3 segundos y activar el micrófono
       try {
         _startSpeechRecognition();
@@ -137,6 +139,7 @@ class _SpeechToTextDemoState extends State<Principal>
         break;
       case AppLifecycleState.inactive:
         _stopSpeechRecognition();
+        _tts.dispose();
         break;
       case AppLifecycleState.paused:
         break;
@@ -163,9 +166,17 @@ class _SpeechToTextDemoState extends State<Principal>
                   height: 10,
                 ),
                 if (_isListening) ...[
-                  const Microphono(onAnimated: true),
+                  const SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: Microphono(),
+                  )
                 ] else ...[
-                  const Microphono(),
+                  const SizedBox(
+                    width: 300,
+                    height: 300,
+                    child: Microphono(onAnimated: false),
+                  )
                 ],
                 Center(
                   child: TextField(
