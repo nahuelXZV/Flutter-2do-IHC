@@ -5,12 +5,18 @@ class SpeakClass {
   late TextToSpeech tts;
   final FlutterTts flutterTts = FlutterTts();
 
-  final String _greet =
+  final String _greet1 =
       'Hola, soy tu asistente virtual, incline el celular a la izquierda para saber su ubicacion o a la derecha para enviar su ubicacion a su contacto de emergencia';
+  final String _greet2 =
+      'A continuación le mencionare el menu, incline el celular a la izquierda para saber su ubicacion actual o a la derecha para enviar su ubicacion a su contacto de emergencia';
   final String _noIdea = 'Lo siento no entendi, por favor puede repetir';
 
-  SpeakClass() {
-    _ttsGreet();
+  SpeakClass(typeGreeting) {
+    if (typeGreeting == 1) {
+      speak(_greet1);
+    } else if (typeGreeting == 2) {
+      speak(_greet2);
+    }
   }
 
   void _handlerTextToSpeech() async {
@@ -31,7 +37,7 @@ class SpeakClass {
   }
 
   void _ttsGreet() async {
-    await speak(_greet);
+    await speak(_greet1);
   }
 
   void ttsError() async {
@@ -44,5 +50,10 @@ class SpeakClass {
 
   void dispose() {
     flutterTts.stop();
+  }
+
+  void initForm() {
+    speak(
+        'Bienvenido a ayudame, Empezaremos el registro de su contacto de emergencia');
   }
 }

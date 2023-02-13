@@ -39,6 +39,7 @@ dependencies:
   permission_handler: ^10.2.0
   google_fonts: ^4.0.3
   avatar_glow: ^2.0.2
+  shared_preferences: ^2.0.17
   
 dev_dependencies:
   flutter_test:
