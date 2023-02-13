@@ -1,6 +1,8 @@
 // ignore_for_file: library_private_types_in_public_api
-
+import 'package:ihc_maps/main.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'libs/speak.dart';
 import 'libs/microphono.dart';
 import 'data/data.dart';
@@ -23,23 +25,50 @@ class _SpeechToTextDemoState extends State<Principal>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    // ignore: unrelated_type_equality_checks
-    if (_data.getData('formDone') == 'true') {
+    openApp();
+    _checkIfFirstTime();
+    _getFormDone();
+  }
+
+  Future<void> _getFormDone() async {
+    String bool = await _data.getData('formDone');
+    print('formDonePrincipal: $bool');
+    if (bool == 'true') {
       _tts = SpeakClass(1);
       // Aqui iria la logica del mover el celular hacelo en una funcion aparte en las carpetas libs, que solo llame a la funcion aqui
       //
-      //
-
     } else {
       _initForm();
     }
   }
 
+  Future<void> _checkIfFirstTime() async {
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+    bool? seen = prefs.getBool('seen');
+    if (!seen!) {
+      // This is the first time the app is being run
+      prefs.setBool('seen', true);
+      prefs.setString('formDone', 'false');
+      // Execute your code here
+    }
+  }
+
   _initForm() async {
     _form = FormClass();
-    Future.delayed(const Duration(seconds: 8), () async {
+    Future.delayed(const Duration(seconds: 7), () async {
       await _form.questions();
       _tts = SpeakClass(2);
+    });
+  }
+
+  openApp() async {
+    final Stream<AccelerometerEvent> stream =
+        SensorsPlatform.instance.accelerometerEvents;
+    stream.listen((AccelerometerEvent event) {
+      // si el celular se mueve abrir esta aplicacion
+      if (event.x > 0.5 || event.y > 0.5 || event.z > 0.5) {
+        runApp(const MyApp());
+      }
     });
   }
 
