@@ -38,7 +38,12 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_tts: ^3.6.3
   sensors_plus: ^2.0.2
-
+  speech_recognition: "^0.3.0"
+  text_to_speech: ^0.2.3
+  permission_handler: ^10.2.0
+  google_fonts: ^4.0.3
+  avatar_glow: ^2.0.2
+  
 dev_dependencies:
   flutter_test:
     sdk: flutter
