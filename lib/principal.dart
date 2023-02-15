@@ -33,8 +33,8 @@ class _SpeechToTextDemoState extends State<Principal>
       _initForm();
       await _data.saveDataBool('seen', false);
     } else {
-      _initForm();
-      // _tts = SpeakClass(1);
+      // _initForm();
+      _tts = SpeakClass(1);
       Future.delayed(const Duration(seconds: 10), () {});
       // logica del sensor
 
