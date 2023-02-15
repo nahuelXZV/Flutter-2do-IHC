@@ -1,11 +1,13 @@
 // ignore_for_file: library_private_types_in_public_api
+import 'dart:async';
+
 import 'package:flutter/material.dart';
+import 'package:sensors_plus/sensors_plus.dart';
 import 'libs/speak.dart';
 import 'libs/microphono.dart';
 import 'data/data.dart';
 import 'libs/form.dart';
 import 'libs/sendLocation.dart';
-
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
 
@@ -27,20 +29,21 @@ class _SpeechToTextDemoState extends State<Principal>
   void initState() {
     WidgetsBinding.instance.addObserver(this);
     super.initState();
-    _checkIfFirstTime();
+    _getFormDone();
   }
-
 
   Future<String> getAddress() async {
     // Obtiene la ubicación actual del usuario
     Position position = await Geolocator.getCurrentPosition();
 
     // Convierte las coordenadas de la ubicación actual en una dirección
-    List<Placemark> placemarks = await placemarkFromCoordinates(position.latitude, position.longitude);
+    List<Placemark> placemarks =
+        await placemarkFromCoordinates(position.latitude, position.longitude);
     Placemark place = placemarks[0];
 
     // Construye la dirección como una cadena de texto
-    String address = '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
+    String address =
+        '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
     return address;
   }
 
@@ -48,47 +51,38 @@ class _SpeechToTextDemoState extends State<Principal>
     String address = '';
     double x = 0;
 
-    String bool = await _data.getData('formDone');
-    print('formDonePrincipal: $bool');
-    if (bool == 'true') {
+    bool seen = await _data.getDataBool('seen');
+    print('formDonePrincipal: $seen');
+    if (!seen) {
       _tts = SpeakClass(1);
+      Future.delayed(const Duration(seconds: 10), () {});
       var giroscopio;
-      giroscopio = accelerometerEvents.listen((AccelerometerEvent event) {
+      giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
         x = event.x;
-        if(x > 8){
+        if (x > 8) {
           //Opcion de decir la ubicacion actual
           print('izquierda');
           giroscopio.cancel();
-          getAddress().then((value){
-              address = 'Su direccion actual es: $value';
-              print(value);
-              _tts.ttlSpeak(address);
+          getAddress().then((value) {
+            address = 'Su direccion actual es: $value';
+            print(value);
+            _tts.ttlSpeak(address);
+            Future.delayed(const Duration(seconds: 10), () {});
           }).catchError((error) => print(error));
-        }else if(x <= -8){
+        } else if (x <= -8) {
           //Opcion de enviar la ubicacion actual
           print('derecha');
           giroscopio.cancel();
+          Position position = await Geolocator.getCurrentPosition();
+          _sendLocation = SendLocation(
+              position.latitude as String, position.longitude as String);
+          _sendLocation.sendSms();
+          Future.delayed(const Duration(seconds: 1), () {});
         }
       });
     } else {
-
-  Future<void> _checkIfFirstTime() async {
-    bool seen = await _data.getDataBool('seen');
-    if (seen) {
-
       _initForm();
       await _data.saveDataBool('seen', false);
-    } else {
-      // _initForm();
-      _tts = SpeakClass(1);
-      Future.delayed(const Duration(seconds: 10), () {});
-      // logica del sensor
-
-      // logica de la ubicacion
-
-      // logica de enviar la ubicacion
-      // _sendLocation = SendLocation('-17.778546', '-63.182126');
-      // await _sendLocation.send();
     }
   }
 
