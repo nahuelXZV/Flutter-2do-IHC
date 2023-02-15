@@ -1,29 +1,30 @@
 // ignore: file_names
-import 'package:flutter_email_sender/flutter_email_sender.dart';
 import '../data/data.dart';
 import 'speak.dart';
+import 'package:flutter_sms/flutter_sms.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class SendLocation {
   String nameContact = '';
-  String emailContact = '';
   String phoneContact = '';
   String myName = '';
   String _body = '';
 
   late Data _data;
-  final SpeakClass _tts = SpeakClass(3);
+  late final SpeakClass _tts;
 
   SendLocation(String latitud, String longitud) {
     _data = Data();
+    _tts = SpeakClass(3);
     _getData();
     _createBody(latitud, longitud);
   }
 
   Future<void> _getData() async {
-    nameContact = await _data.getData('nameContact');
-    emailContact = await _data.getData('emailContact');
-    phoneContact = await _data.getData('phoneContact');
     myName = await _data.getData('myName');
+    nameContact = await _data.getData('nameContact');
+    phoneContact = await _data.getData('phoneContact');
+    phoneContact = '+591$phoneContact';
   }
 
   void _createBody(String latitud, String longitud) {
@@ -35,20 +36,15 @@ class SendLocation {
     _body += 'https://www.google.com/maps/search/?api=1&query=$_lat,$_lng';
   }
 
-  Future<void> send() async {
-    final Email email = Email(
-      body: _body,
-      subject: 'Mi ubicación actual: $myName',
-      recipients: [emailContact],
-      isHTML: false,
-    );
-
-    try {
-      await FlutterEmailSender.send(email);
-      _tts.speak('Ubicación enviada');
-      Future.delayed(const Duration(seconds: 3));
-    } catch (error) {
-      print(error);
+  sendSms() async {
+    if (await Permission.sms.request().isGranted) {
+      String _result = await sendSMS(
+          message: _body, recipients: [phoneContact], sendDirect: true);
+      print(_result);
+      _tts.speak('Mensaje enviado');
+    } else {
+      print('No se pudo enviar el SMS');
+      _tts.speak('No se pudo enviar el SMS');
     }
   }
 }
