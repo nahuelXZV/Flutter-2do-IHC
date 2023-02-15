@@ -16,7 +16,7 @@ class SpeechClass {
     _activateSpeechRecognizer(); // activar el micrófono
   }
 
-  startSpeech() {
+  Future<void> startSpeech() async {
     _speech
         .listen(locale: _currentLocale)
         .then((result) {})
@@ -25,11 +25,8 @@ class SpeechClass {
     isComplete = false;
   }
 
-  stopSpeech() {
-    _speech.stop().then((result) {
-      print('Deteniendo Reconocimiento' + result.toString());
-      transcription = result.toString();
-    });
+  Future<void> stopSpeech() async {
+    await _speech.stop().then((result) {});
   }
 
   //----- Init methods -----//
@@ -60,7 +57,6 @@ class SpeechClass {
 
   void onCurrentLocale(String text) {
     _currentLocale = text;
-    print('current locale: $_currentLocale');
   }
 
   void onRecognitionStarted() {
@@ -73,7 +69,7 @@ class SpeechClass {
   }
 
   void onRecognitionComplete() async {
-    if (count == 2) {
+    if (count >= 2) {
       print('Reconocimiento completo');
       _isListening = false; // se desactiva la escucha
       count = 1;

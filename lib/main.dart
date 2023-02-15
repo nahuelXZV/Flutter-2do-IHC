@@ -2,9 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'principal.dart';
+import 'data/data.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  _initSeen();
   runApp(const MyApp());
+}
+
+_initSeen() async {
+  final Data data = Data();
+  bool seen = await data.getDataBool('seen');
+  if (!seen) {
+    await data.saveDataBool('seen', true);
+  }
+  print({
+    'seenMain': await data.getDataBool('seen'),
+  });
 }
 
 class MyApp extends StatelessWidget {
