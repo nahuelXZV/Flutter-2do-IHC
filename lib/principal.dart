@@ -30,9 +30,16 @@ class _SpeechToTextDemoState extends State<Principal>
     WidgetsBinding.instance.addObserver(this);
     super.initState();
     _getFormDone();
+    // mostrar los datos de name, phone y myName
+
+    _data.getData('name').then((value) => print('name: $value'));
+    _data.getData('phone').then((value) => print('phone: $value'));
+    _data.getData('myName').then((value) => print('myName: $value'));
   }
 
   Future<String> getAddress() async {
+    // obtener permiso de ubicacion actual
+    await Geolocator.requestPermission();
     // Obtiene la ubicación actual del usuario
     Position position = await Geolocator.getCurrentPosition();
 
@@ -48,42 +55,51 @@ class _SpeechToTextDemoState extends State<Principal>
   }
 
   Future<void> _getFormDone() async {
-    String address = '';
-    double x = 0;
-
     bool seen = await _data.getDataBool('seen');
+    String name = await _data.getData('name');
+    String phone = await _data.getData('phone');
+    String myName = await _data.getData('myName');
     print('formDonePrincipal: $seen');
-    if (!seen) {
+    if (name != '' && phone != '' && myName != '') {
       _tts = SpeakClass(1);
       Future.delayed(const Duration(seconds: 10), () {});
-      var giroscopio;
-      giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
-        x = event.x;
-        if (x > 8) {
-          //Opcion de decir la ubicacion actual
-          print('izquierda');
-          giroscopio.cancel();
-          getAddress().then((value) {
-            address = 'Su direccion actual es: $value';
-            print(value);
-            _tts.ttlSpeak(address);
-            Future.delayed(const Duration(seconds: 10), () {});
-          }).catchError((error) => print(error));
-        } else if (x <= -8) {
-          //Opcion de enviar la ubicacion actual
-          print('derecha');
-          giroscopio.cancel();
-          Position position = await Geolocator.getCurrentPosition();
-          _sendLocation = SendLocation(
-              position.latitude as String, position.longitude as String);
-          _sendLocation.sendSms();
-          Future.delayed(const Duration(seconds: 1), () {});
-        }
-      });
+      _menuSensor();
     } else {
       _initForm();
       await _data.saveDataBool('seen', false);
+      _menuSensor();
     }
+  }
+
+  Future<void> _menuSensor() async {
+    var giroscopio;
+    String address = '';
+    double x = 0;
+    giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
+      x = event.x;
+      if (x > 8) {
+        //Opcion de decir la ubicacion actual
+        print('izquierda');
+        // giroscopio.cancel();
+        getAddress().then((value) {
+          address = 'Su direccion actual es: $value';
+          print(value);
+          _tts.speak(address);
+          Future.delayed(const Duration(seconds: 10), () {});
+        }).catchError((error) => print(error));
+      } else if (x <= -8) {
+        //Opcion de enviar la ubicacion actual
+        print('derecha');
+        // giroscopio.cancel();
+        Position position = await Geolocator.getCurrentPosition();
+        // pasar de double a string
+        String lat = position.latitude.toString();
+        String lon = position.longitude.toString();
+        _sendLocation = SendLocation(lat, lon);
+        _sendLocation.sendSms();
+        Future.delayed(const Duration(seconds: 1), () {});
+      }
+    });
   }
 
   _initForm() async {

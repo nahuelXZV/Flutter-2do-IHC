@@ -24,6 +24,10 @@ class SendLocation {
     myName = await _data.getData('myName');
     nameContact = await _data.getData('nameContact');
     phoneContact = await _data.getData('phoneContact');
+    if (phoneContact.isEmpty || phoneContact == null) phoneContact = '69341427';
+    if (phoneContact.length >= 9) {
+      phoneContact = phoneContact.substring(0, 8);
+    }
     phoneContact = '+591$phoneContact';
   }
 

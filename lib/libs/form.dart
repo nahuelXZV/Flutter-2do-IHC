@@ -25,10 +25,7 @@ class FormClass {
     await _question('¿Cuál es el nombre de su contacto de emergencia?', 'name');
 
     // tercera pregunta
-    // await _question('¿Cuál es su número de celular?', 'phone');
-
-    // cuarta pregunta
-    await _question('¿Cuál es su correo electronico?', 'email');
+    await _question('¿Cuál es el número de celular de $name?', 'phone');
 
     // agradecimiento
     await _tts.speak('Gracias por su colaboración');
@@ -40,19 +37,15 @@ class FormClass {
     //  sacar solo los numeros y eliminar espacios
     phone = phone.replaceAll(RegExp(r'[^0-9]'), '');
     print('phone: $phone');
-    // eliminar espacios y pasar a minusculas
-    // verificar que sea un correo valido
-    email = email.replaceAll(' ', '').toLowerCase();
-    print('email: $email');
     print('**********************************************');
     // guardar datos
     await _data.saveData('myName', myName);
     await _data.saveData('name', name);
     await _data.saveData('phone', phone);
-    await _data.saveData('email', email);
+    // await _data.saveData('email', email);
   }
 
-  Future<void> _verifInfo(String message, String type) async {
+  Future<void> _verifInfo(String message, String type, String question) async {
     switch (type) {
       case 'myName':
         if (message != '') {
@@ -78,13 +71,23 @@ class FormClass {
           await Future.delayed(const Duration(seconds: 5));
         }
         break;
-      case 'email':
-        if (message != '' && _verifEmail(message)) {
-          await _tts.speak('El correo electrónico que dijo es $message');
-        } else {
-          await _tts.speak('No se pudo reconocer el correo electrónico');
-          await Future.delayed(const Duration(seconds: 5));
-        }
+      default:
+    }
+    if (_speech.transcription == '') {
+      await _tts.speak('Por favor repita la información');
+      await Future.delayed(const Duration(seconds: 3));
+      await _question(question, type);
+      return;
+    }
+    switch (type) {
+      case 'myName':
+        myName = _speech.transcription;
+        break;
+      case 'name':
+        name = _speech.transcription;
+        break;
+      case 'phone':
+        phone = _speech.transcription;
         break;
       default:
     }
@@ -99,41 +102,16 @@ class FormClass {
       while (!_speech.isComplete) {
         await Future.delayed(const Duration(seconds: 1));
         print(_speech.isComplete);
+        if (type == 'phone') {
+          if (_speech.transcription.length == 8) {
+            _speech.stopSpeech();
+          }
+        }
       }
-      await _verifInfo(_speech.transcription, type);
-      if (_speech.transcription == '') {
-        await _tts.speak('Por favor repita la información');
-        await Future.delayed(const Duration(seconds: 3));
-        await _question(question, type);
-        return;
-      }
-      switch (type) {
-        case 'myName':
-          myName = _speech.transcription;
-          break;
-        case 'name':
-          name = _speech.transcription;
-          break;
-        case 'phone':
-          phone = _speech.transcription;
-          break;
-        case 'email':
-          email = _speech.transcription;
-          break;
-        default:
-      }
+      await _verifInfo(_speech.transcription, type, question);
       await Future.delayed(const Duration(seconds: 7));
     } catch (e) {
       print(e);
     }
-  }
-
-  bool _verifEmail(String emailV) {
-    emailV = emailV.replaceAll(' ', '').toLowerCase();
-    if (!RegExp(r'^.+@[a-zA-Z]+\.{1}[a-zA-Z]+(\.{0,1}[a-zA-Z]+)$')
-        .hasMatch(emailV)) {
-      return false;
-    }
-    return true;
   }
 }
