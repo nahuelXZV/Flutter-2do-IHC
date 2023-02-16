@@ -24,6 +24,7 @@ class _SpeechToTextDemoState extends State<Principal>
   final Data _data = Data();
   late FormClass _form;
   late SendLocation _sendLocation;
+  bool _timeSendSms = true;
 
   @override
   void initState() {
@@ -95,9 +96,14 @@ class _SpeechToTextDemoState extends State<Principal>
         // pasar de double a string
         String lat = position.latitude.toString();
         String lon = position.longitude.toString();
-        _sendLocation = SendLocation(lat, lon);
-        _sendLocation.sendSms();
-        Future.delayed(const Duration(seconds: 1), () {});
+        if (_timeSendSms) {
+          _sendLocation = SendLocation(lat, lon);
+          _sendLocation.sendSms();
+          _timeSendSms = false;
+        }
+        Future.delayed(const Duration(minutes: 1), () {
+          _timeSendSms = true;
+        });
       }
     });
   }

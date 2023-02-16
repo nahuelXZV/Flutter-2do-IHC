@@ -16,19 +16,19 @@ class SendLocation {
   SendLocation(String latitud, String longitud) {
     _data = Data();
     _tts = SpeakClass(3);
-    _getData();
-    _createBody(latitud, longitud);
+    _getData(latitud, longitud);
   }
 
-  Future<void> _getData() async {
+  Future<void> _getData(String latitud, String longitud) async {
     myName = await _data.getData('myName');
-    nameContact = await _data.getData('nameContact');
-    phoneContact = await _data.getData('phoneContact');
+    nameContact = await _data.getData('name');
+    phoneContact = await _data.getData('phone');
     if (phoneContact.isEmpty || phoneContact == null) phoneContact = '69341427';
     if (phoneContact.length >= 9) {
       phoneContact = phoneContact.substring(0, 8);
     }
     phoneContact = '+591$phoneContact';
+    _createBody(latitud, longitud);
   }
 
   void _createBody(String latitud, String longitud) {
@@ -42,6 +42,7 @@ class SendLocation {
 
   sendSms() async {
     if (await Permission.sms.request().isGranted) {
+      print(_body);
       String _result = await sendSMS(
           message: _body, recipients: [phoneContact], sendDirect: true);
       print(_result);

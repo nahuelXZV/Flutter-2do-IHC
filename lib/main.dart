@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sensors_plus/sensors_plus.dart';
+import 'libs/openApp.dart';
 import 'principal.dart';
 import 'data/data.dart';
 
-void main() {
+void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   _initSeen();
+  await initializeService();
   runApp(const MyApp());
 }
 

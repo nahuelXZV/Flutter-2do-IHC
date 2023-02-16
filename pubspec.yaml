@@ -45,6 +45,8 @@ dependencies:
   flutter_email_sender: ^5.2.0
   mailer: ^6.0.0
   flutter_sms: ^2.3.3
+  flutter_background_service: ^2.4.6
+  shake: ^1.0.1
   
 dev_dependencies:
   flutter_test:
