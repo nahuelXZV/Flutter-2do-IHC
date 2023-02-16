@@ -73,16 +73,16 @@ class _SpeechToTextDemoState extends State<Principal>
   }
 
   Future<void> _menuSensor() async {
-    var giroscopio;
+    var acelerometro;
     String address = '';
     double x = 0, y =0;
-    giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
+    acelerometro = accelerometerEvents.listen((AccelerometerEvent event) async {
       x = event.x;
       y = event.y;
       if (x > 8) {
         //Opcion de decir la ubicacion actual
         print('izquierda');
-        // giroscopio.cancel();
+        // acelerometro.cancel();
         getAddress().then((value) {
           address = 'Su direccion actual es: $value';
           print(value);
@@ -92,7 +92,7 @@ class _SpeechToTextDemoState extends State<Principal>
       } else if (x <= -8) {
         //Opcion de enviar la ubicacion actual
         print('derecha');
-        // giroscopio.cancel();
+        // acelerometro.cancel();
         Position position = await Geolocator.getCurrentPosition();
         // pasar de double a string
         String lat = position.latitude.toString();
@@ -105,7 +105,9 @@ class _SpeechToTextDemoState extends State<Principal>
         Future.delayed(const Duration(minutes: 1), () {
           _timeSendSms = true;
         });
-      }else if(y > 8){
+      }else if(y <= -7){
+        print('atras');
+        _initForm();
       }
     });
   }
