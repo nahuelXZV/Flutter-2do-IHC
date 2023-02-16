@@ -11,9 +11,9 @@ class FormClass {
   String phone = '';
   String email = '';
 
-  FormClass() {
+  FormClass(type) {
     _data = Data();
-    _tts.initForm();
+    _tts.initForm(type);
     _speech = SpeechClass();
   }
 
@@ -34,7 +34,6 @@ class FormClass {
     print('**************Formulario llenado***************');
     print('myName: $myName');
     print('name: $name');
-    //  sacar solo los numeros y eliminar espacios
     phone = phone.replaceAll(RegExp(r'[^0-9]'), '');
     print('phone: $phone');
     print('**********************************************');
@@ -42,7 +41,6 @@ class FormClass {
     await _data.saveData('myName', myName);
     await _data.saveData('name', name);
     await _data.saveData('phone', phone);
-    // await _data.saveData('email', email);
   }
 
   Future<void> _verifInfo(String message, String type, String question) async {
@@ -98,10 +96,8 @@ class FormClass {
       await _tts.speak(question);
       await Future.delayed(const Duration(seconds: 3));
       _speech.startSpeech();
-      print('**************Escuchando***************');
       while (!_speech.isComplete) {
         await Future.delayed(const Duration(seconds: 1));
-        print(_speech.isComplete);
         if (type == 'phone') {
           if (_speech.transcription.length == 8) {
             _speech.stopSpeech();

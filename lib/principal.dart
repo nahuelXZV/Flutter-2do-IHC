@@ -9,7 +9,6 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'libs/speak.dart';
-import 'libs/microphono.dart';
 import 'data/data.dart';
 import 'libs/form.dart';
 import 'libs/sendLocation.dart';
@@ -49,6 +48,8 @@ class _SpeechToTextDemoState extends State<Principal>
     // Obtiene la ubicación actual del usuario
     Position position = await Geolocator.getCurrentPosition();
 
+    await _data.saveData('lat', position.latitude.toString());
+    await _data.saveData('lon', position.longitude.toString());
     // Convierte las coordenadas de la ubicación actual en una dirección
     List<Placemark> placemarks =
         await placemarkFromCoordinates(position.latitude, position.longitude);
@@ -71,7 +72,7 @@ class _SpeechToTextDemoState extends State<Principal>
       Future.delayed(const Duration(seconds: 10), () {});
       _menuSensor();
     } else {
-      _initForm();
+      _initForm(1);
       await _data.saveDataBool('seen', false);
       _menuSensor();
     }
@@ -80,7 +81,7 @@ class _SpeechToTextDemoState extends State<Principal>
   Future<void> _menuSensor() async {
     var acelerometro;
     String address = '';
-    double x = 0, y =0;
+    double x = 0, y = 0;
     acelerometro = accelerometerEvents.listen((AccelerometerEvent event) async {
       x = event.x;
       y = event.y;
@@ -110,18 +111,18 @@ class _SpeechToTextDemoState extends State<Principal>
         Future.delayed(const Duration(minutes: 1), () {
           _timeSendSms = true;
         });
-      }else if(y <= -7){
+      } else if (y <= -5) {
         print('atras');
-        _initForm();
+        _initForm(2);
       }
     });
   }
 
-  _initForm() async {
-    _form = FormClass();
+  _initForm(type) async {
+    _form = FormClass(type);
     Future.delayed(const Duration(seconds: 9), () async {
       await _form.questions();
-      _tts = SpeakClass(2);
+      if (type == 1) _tts = SpeakClass(2);
     });
   }
 

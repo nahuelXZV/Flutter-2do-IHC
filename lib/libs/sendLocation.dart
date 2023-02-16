@@ -35,9 +35,9 @@ class SendLocation {
     _body =
         'Hola $nameContact, soy $myName y te envío mi ubicación actual. \n\n';
     _body += 'Mi ubicación actual es: \n\n';
-    String _lat = latitud;
-    String _lng = longitud;
-    _body += 'https://www.google.com/maps/search/?api=1&query=$_lat,$_lng';
+    String lat = latitud;
+    String lng = longitud;
+    _body += 'https://www.google.com/maps/search/?api=1&query=$lat,$lng';
   }
 
   sendSms() async {
@@ -45,7 +45,6 @@ class SendLocation {
       print(_body);
       String _result = await sendSMS(
           message: _body, recipients: [phoneContact], sendDirect: true);
-      print(_result);
       _tts.speak('Mensaje enviado');
     } else {
       print('No se pudo enviar el SMS');

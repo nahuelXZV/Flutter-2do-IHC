@@ -52,8 +52,12 @@ class SpeakClass {
     flutterTts.stop();
   }
 
-  void initForm() {
-    speak(
-        'Bienvenido a ayúdame, Empezaremos el registro de su contacto de emergencia');
+  void initForm(type) {
+    if (type == 1) {
+      speak(
+          'Bienvenido a ayúdame, Empezaremos el registro de su contacto de emergencia');
+    } else {
+      speak('Empezaremos con la modificación de sus datos');
+    }
   }
 }
