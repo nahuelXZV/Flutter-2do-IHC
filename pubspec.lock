@@ -98,28 +98,32 @@ packages:
     dependency: "direct main"
     description:
       name: flutter_background_service
-      url: "https://pub.dartlang.org"
+      sha256: "7b9f15ab7d1a5784850ecfde722be4ace4dbcf1072a1fe33b7f9cbe871241e53"
+      url: "https://pub.dev"
     source: hosted
     version: "2.4.6"
   flutter_background_service_android:
     dependency: transitive
     description:
       name: flutter_background_service_android
-      url: "https://pub.dartlang.org"
+      sha256: "57fd631d800f7e56ca5bfadcfc00c8903eb721b23506b1a387342039521883ec"
+      url: "https://pub.dev"
     source: hosted
     version: "3.0.3"
   flutter_background_service_ios:
     dependency: transitive
     description:
       name: flutter_background_service_ios
-      url: "https://pub.dartlang.org"
+      sha256: d3f1dc009137c1ac19f5e3d88668836f088a7e078396733547339765d46ff12f
+      url: "https://pub.dev"
     source: hosted
     version: "2.4.0"
   flutter_background_service_platform_interface:
     dependency: transitive
     description:
       name: flutter_background_service_platform_interface
-      url: "https://pub.dartlang.org"
+      sha256: "5f0480ee8378984f718d640abbe09b4d6d024d58a72b2d8b86bdedb3cf095ff8"
+      url: "https://pub.dev"
     source: hosted
     version: "2.2.0"
   flutter_email_sender:
@@ -448,7 +452,8 @@ packages:
     dependency: transitive
     description:
       name: sensors
-      url: "https://pub.dartlang.org"
+      sha256: "69c10fe94a63dd7c6f5e6557366e5329a713bf6c45d885d95a56642dd8722e35"
+      url: "https://pub.dev"
     source: hosted
     version: "2.0.3"
   sensors_plus:
@@ -471,7 +476,8 @@ packages:
     dependency: "direct main"
     description:
       name: shake
-      url: "https://pub.dartlang.org"
+      sha256: "48d8265530de7cc1bc7b279702f59d3c10505778b2fbe50314ebf2928eb4e52a"
+      url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
   shared_preferences:
