@@ -75,9 +75,10 @@ class _SpeechToTextDemoState extends State<Principal>
   Future<void> _menuSensor() async {
     var giroscopio;
     String address = '';
-    double x = 0;
+    double x = 0, y =0;
     giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
       x = event.x;
+      y = event.y;
       if (x > 8) {
         //Opcion de decir la ubicacion actual
         print('izquierda');
@@ -104,6 +105,7 @@ class _SpeechToTextDemoState extends State<Principal>
         Future.delayed(const Duration(minutes: 1), () {
           _timeSendSms = true;
         });
+      }else if(y > 8){
       }
     });
   }
@@ -144,23 +146,11 @@ class _SpeechToTextDemoState extends State<Principal>
         backgroundColor: Colors.white,
         appBar: AppBar(
           title: const Text('Ayúdame'),
-          backgroundColor: const Color.fromRGBO(118, 74, 188, 1),
+          backgroundColor: Color.fromARGB(255, 243, 104, 62),
         ),
         body: Container(
-          padding: const EdgeInsets.all(16),
-          child: SingleChildScrollView(
-            child: Column(
-              children: const [
-                SizedBox(
-                  height: 10,
-                ),
-                SizedBox(
-                  width: 300,
-                  height: 300,
-                  child: Microphono(onAnimated: false),
-                ),
-              ],
-            ),
+          child: Center(
+            child: Image.asset('assets/images/ayudame.png'),
           ),
         ),
       ),
