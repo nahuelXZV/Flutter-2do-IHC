@@ -48,6 +48,7 @@ class FormClass {
       case 'myName':
         if (message != '') {
           await _tts.speak('El nombre que dijo es $message');
+          return;
         } else {
           await _tts.speak('No se pudo reconocer el nombre');
           await Future.delayed(const Duration(seconds: 3));
@@ -56,6 +57,7 @@ class FormClass {
       case 'name':
         if (message != '') {
           await _tts.speak('El nombre que dijo es $message');
+          return;
         } else {
           await _tts.speak('No se pudo reconocer el nombre');
           await Future.delayed(const Duration(seconds: 3));
@@ -64,6 +66,7 @@ class FormClass {
       case 'phone':
         if (message != '') {
           await _tts.speak('El número de celular que dijo es $message');
+          return;
         } else {
           await _tts.speak('No se pudo reconocer el número de celular');
           await Future.delayed(const Duration(seconds: 5));
