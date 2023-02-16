@@ -1,26 +1,29 @@
+import 'package:flutter_background_service/flutter_background_service.dart'
+    show
+        AndroidConfiguration,
+        FlutterBackgroundService,
+        IosConfiguration,
+        ServiceInstance;
 import 'package:flutter/material.dart';
 import 'package:flutter_tts/flutter_tts.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'libs/openApp.dart';
 import 'principal.dart';
-import 'data/data.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  _initSeen();
   await initializeService();
+  _initSeen();
   runApp(const MyApp());
 }
 
 _initSeen() async {
-  final Data data = Data();
-  bool seen = await data.getDataBool('seen');
-  if (!seen) {
-    await data.saveDataBool('seen', true);
+  final service = FlutterBackgroundService();
+  var isRunning = await service.isRunning();
+  print('isRunning: $isRunning');
+  if (isRunning) {
+    service.invoke("stopService");
   }
-  print({
-    'seenMain': await data.getDataBool('seen'),
-  });
 }
 
 class MyApp extends StatelessWidget {

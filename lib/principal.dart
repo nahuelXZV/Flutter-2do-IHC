@@ -1,6 +1,11 @@
 // ignore_for_file: library_private_types_in_public_api
+import 'package:flutter_background_service/flutter_background_service.dart'
+    show
+        AndroidConfiguration,
+        FlutterBackgroundService,
+        IosConfiguration,
+        ServiceInstance;
 import 'dart:async';
-
 import 'package:flutter/material.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import 'libs/speak.dart';
@@ -116,21 +121,37 @@ class _SpeechToTextDemoState extends State<Principal>
     });
   }
 
+  Future<void> _startService() async {
+    final service = FlutterBackgroundService();
+    var isRunning = await service.isRunning();
+    print('isRunning: $isRunning');
+    if (!isRunning) {
+      service.startService();
+    } else {
+      service.invoke("stopService");
+    }
+  }
+
   @override
   void dispose() {
+    // cuando se cierra la app
     WidgetsBinding.instance.removeObserver(this);
     super.dispose();
+    _startService();
   }
 
   @override
   void didChangeAppLifecycleState(AppLifecycleState state) {
+    // cuando se minimiza la app
     switch (state) {
-      case AppLifecycleState.resumed:
+      case AppLifecycleState.resumed: // cuando se vuelve a abrir la app
+        _startService();
         break;
-      case AppLifecycleState.inactive:
+      case AppLifecycleState.inactive: // cuando se minimiza la app
         _tts.dispose();
+        _startService();
         break;
-      case AppLifecycleState.paused:
+      case AppLifecycleState.paused: // cuando se minimiza la app
         break;
       case AppLifecycleState.detached:
         break;
