@@ -47,6 +47,7 @@ dependencies:
   flutter_sms: ^2.3.3
   flutter_background_service: ^2.4.6
   shake: ^1.0.1
+  flutter_launcher_icons: ^0.11.0
   
 dev_dependencies:
   flutter_test:
@@ -58,6 +59,10 @@ dev_dependencies:
   # package. See that file for information about deactivating specific lint
   # rules and activating additional ones.
   flutter_lints: ^2.0.0
+
+flutter_icons:
+  android: "launcher_icon"
+  image_path: "assets/images/ayudame.png"
 
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
