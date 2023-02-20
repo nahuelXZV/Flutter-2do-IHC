@@ -167,14 +167,46 @@ class _SpeechToTextDemoState extends State<Principal>
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
-        backgroundColor: Colors.white,
+        backgroundColor: Color.fromARGB(233, 225, 225, 225),
         appBar: AppBar(
-          title: const Text('Ayúdame'),
+          title: const Text(
+            'Ayúdame',
+            style: TextStyle(
+              color: Colors.white,
+              fontSize: 30,
+            ),
+          ),
           backgroundColor: Color.fromARGB(255, 243, 104, 62),
+          centerTitle: true,
+          elevation: 14,
+          toolbarHeight: 80,
+          shape: const RoundedRectangleBorder(
+              borderRadius: BorderRadius.only(
+            bottomLeft: Radius.circular(30),
+            bottomRight: Radius.circular(30),
+          )),
         ),
         body: Container(
-          child: Center(
-            child: Image.asset('assets/images/ayudame.png'),
+          alignment: Alignment.center,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Image.asset('assets/images/ayudame.png'),
+              const SizedBox(height: 20), // Espacio entre el texto y el icono
+              Container(
+                height: 70,
+                width: 70,
+                alignment: Alignment.center,
+                decoration: const BoxDecoration(boxShadow: [
+                  BoxShadow(blurRadius: 7, spreadRadius: 3, color: Color.fromARGB(255, 155, 155, 155))
+                ], shape: BoxShape.circle, color: Color.fromARGB(255, 243, 104, 62)),
+                child: const Icon(
+                  IconData(0xf8bd, fontFamily: 'MaterialIcons'),
+                  color: Colors.white,
+                  size: 50.0,
+                ),
+              ), // Icono que deseas colocar debajo del texto
+            ],
           ),
         ),
       ),
