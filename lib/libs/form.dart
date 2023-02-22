@@ -94,12 +94,18 @@ class FormClass {
   Future<void> _question(String question, type) async {
     try {
       await _tts.speak(question);
-      await Future.delayed(const Duration(seconds: 3));
+      if (type == 'myName') {
+        await Future.delayed(const Duration(seconds: 2));
+      } else {
+        await Future.delayed(const Duration(seconds: 4));
+      }
       _speech.startSpeech();
       while (!_speech.isComplete) {
         await Future.delayed(const Duration(seconds: 1));
         if (type == 'phone') {
-          if (_speech.transcription.length == 8) {
+          print(
+              '-------------------------------------------------------------------------------');
+          if (_speech.transcription.length >= 15) {
             _speech.stopSpeech();
           }
         }
@@ -108,6 +114,7 @@ class FormClass {
       await Future.delayed(const Duration(seconds: 7));
     } catch (e) {
       print(e);
+      _tts.speak('Ocurrio un error, por favor intente de nuevo');
     }
   }
 }

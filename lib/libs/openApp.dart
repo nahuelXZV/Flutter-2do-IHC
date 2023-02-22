@@ -16,6 +16,10 @@ import 'package:ihc_maps/libs/speak.dart';
 import 'package:sensors_plus/sensors_plus.dart';
 import '../data/data.dart';
 import 'form.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 final service = FlutterBackgroundService();
 final flutterTts = FlutterTts();
@@ -92,6 +96,22 @@ Future<String> getAddress() async {
   return address;
 }
 
+Future<String> getAddress2() async {
+  // obtener permiso de ubicacion actual
+  // await Geolocator.requestPermission();
+  // Obtiene la ubicación actual del usuario
+  Position position = await Geolocator.getCurrentPosition();
+  // Convierte las coordenadas de la ubicación actual en una dirección
+  List<Placemark> placemarks =
+      await placemarkFromCoordinates(position.latitude, position.longitude);
+  Placemark place = placemarks[0];
+
+  // Construye la dirección como una cadena de texto
+  String address =
+      '${place.street}, ${place.subLocality}, ${place.locality}, ${place.country}';
+  return address;
+}
+
 Future<void> _getFormDone() async {
   String name = await _data.getData('name');
   String phone = await _data.getData('phone');
@@ -101,22 +121,60 @@ Future<void> _getFormDone() async {
   }
 }
 
+_lugaresCercanos() async {
+  Position position = await Geolocator.getCurrentPosition();
+  String lat = position.latitude.toString();
+  String lon = position.longitude.toString();
+  String url =
+      'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lon&radius=70&key=KEY';
+  var response = await http.get(Uri.parse(url)).onError(
+      (error, stackTrace) => _tts.speak('Conectate a internet por favor'));
+  if (response.statusCode == 200) {
+    var apiLugares = (json.decode(response.body))['results'];
+    List<String> listaLugares = [];
+    for (var lugar in apiLugares) {
+      listaLugares.add(lugar['name']);
+    }
+    String lugares = 'Los lugares cercanos son: ';
+    int c = 0;
+    for (var i = 0; i < listaLugares.length; i++) {
+      lugares = '$lugares${listaLugares[i]}  ,  ';
+      c++;
+      if (c == 4) break;
+    }
+    lugares = lugares.toLowerCase();
+    if (lugares == "") {
+      _tts.speak('No hay lugares cercanos');
+    } else {
+      print(lugares);
+      _tts.speak(lugares);
+    }
+  } else {
+    print('error');
+    _tts.speak('Ocurrio un error');
+  }
+}
+
 Future<void> _menuSensor() async {
   var giroscopio;
   String address = '';
   double x = 0;
   giroscopio = accelerometerEvents.listen((AccelerometerEvent event) async {
     x = event.x;
-    if (x > 8 || x <= -10) {
+    if (x > 8) {
       //Opcion de decir la ubicacion actual
       print('izquierda | derecha');
-      getAddress().then((value) {
+      getAddress2().then((value) {
         address = 'Su direccion actual es: $value';
         print(value);
         _tts = SpeakClass(3);
         _tts.speak(address);
         Future.delayed(const Duration(seconds: 10), () {});
       }).catchError((error) => print(error));
+    } else if (x < -8) {
+      //Opcion de decir los lugares cercanos
+      print('derecha | izquierda');
+      _lugaresCercanos();
     }
   });
 }

@@ -6,9 +6,9 @@ class SpeakClass {
   final FlutterTts flutterTts = FlutterTts();
 
   final String _greet1 =
-      'Hola, soy tu asistente virtual, incline el celular a la izquierda para saber su ubicación, a la derecha para enviar su ubicación, hacia adelante para saber los lugares cercanos. Si quiere modificar su contacto de emergencia incline el celular hacia atras';
+      'Hola, soy tu asistente virtual, incline el celular a la izquierda para saber su ubicación actual, a la derecha para enviar su ubicación y hacia atrás para modificar su contacto de emergencia. Cuando cierre la aplicación incline el celular hacia la izquierda para saber su ubicación actual y hacia la derecha para conocer los lugares cercanos';
   final String _greet2 =
-      'A continuación le mencionaré el menú, incline el celular a la izquierda para saber su ubicación , a la derecha para enviar su ubicación, hacia adelante para saber los lugares cercanos. Si quiere modificar su contacto de emergencia incline el celular hacia atras';
+      'A continuación le mencionaré el menú, incline el celular a la izquierda para saber su ubicación actual, a la derecha para enviar su ubicación y hacia atrás para modificar su contacto de emergencia. Cuando cierre la aplicación incline el celular hacia la izquierda para saber su ubicación actual y hacia la derecha para conocer los lugares cercanos';
   final String _noIdea = 'Lo siento no entendí, por favor puedes repetir';
 
   SpeakClass(typeGreeting) {

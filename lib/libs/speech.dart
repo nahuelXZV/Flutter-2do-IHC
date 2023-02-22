@@ -80,7 +80,7 @@ class SpeechClass {
   }
 
   void onError() {
-    isComplete = true;
+    // isComplete = true;
     _isListening = false;
     transcription = '';
     count = 1;

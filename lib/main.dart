@@ -3,12 +3,22 @@ import 'package:flutter_background_service/flutter_background_service.dart'
 import 'package:flutter/material.dart';
 import 'libs/openApp.dart';
 import 'principal.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initializeService();
   _initSeen();
+  _requestPermission();
   runApp(const MyApp());
+}
+
+Future<void> _requestPermission() async {
+  if (!await Permission.locationAlways.request().isGranted) {
+    // You can request multiple permissions at once.
+    var statues = await Permission.locationAlways.request();
+    print(statues);
+  }
 }
 
 _initSeen() async {
