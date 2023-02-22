@@ -14,6 +14,8 @@ import 'libs/form.dart';
 import 'libs/sendLocation.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class Principal extends StatefulWidget {
   const Principal({super.key});
@@ -114,8 +116,43 @@ class _SpeechToTextDemoState extends State<Principal>
       } else if (y <= -5) {
         print('atras');
         _initForm(2);
+      }else if(y >= 5){
+        print('adelante');
+        _lugaresCercanos();
       }
     });
+  }
+
+  _lugaresCercanos() async{
+    Position position = await Geolocator.getCurrentPosition();
+    String lat = position.latitude.toString();
+    String lon = position.longitude.toString();
+    String url = 'https://maps.googleapis.com/maps/api/place/nearbysearch/json?location=$lat,$lon&radius=70&key=YOUR_KEY';
+    var response = await http.get(Uri.parse(url)).onError((error, stackTrace) => _tts.speak('Conectate a internet por favor'));
+    if(response.statusCode==200){
+      var apiLugares = (json.decode(response.body))['results'];
+      List<String> listaLugares = [];
+      for (var lugar in apiLugares) {
+        listaLugares.add(lugar['name']);
+      }
+      String lugares = 'Los lugares cercanos son: ';
+      int c = 0;
+      for (var i = 0; i < listaLugares.length ; i++) {
+        lugares = '$lugares${listaLugares[i]}  ,  ';
+        c++;
+        if(c == 4) break;
+      }
+      lugares = lugares.toLowerCase();
+      if(lugares == "") {
+        _tts.speak('No hay lugares cercanos');
+      }else {
+        print(lugares);
+        _tts.speak(lugares);
+      }
+    }else{
+      print('error');
+      _tts.speak('Ocurrio un error');
+    }
   }
 
   _initForm(type) async {
